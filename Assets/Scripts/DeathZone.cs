@@ -2,23 +2,21 @@ using UnityEngine;
 
 public class DeathZone : MonoBehaviour
 {
-    private Vector3 respawnPosition;
-
-    private void Start()
-    {
-        // Ќаходим игрока и запоминаем его начальную позицию
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
-        {
-            respawnPosition = player.transform.position;
-        }
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            other.transform.position = respawnPosition;
+            Debug.Log("»грок вошел в зону смерти");
+
+            PlayerDeathHandler playerDeath = other.GetComponent<PlayerDeathHandler>();
+            if (playerDeath != null)
+            {
+                playerDeath.Die();
+            }
+            else
+            {
+                Debug.LogError("PlayerDeathHandler не найден на игроке!");
+            }
         }
     }
 }
