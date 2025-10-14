@@ -1,4 +1,3 @@
-// Coin.cs
 using UnityEngine;
 
 public class Coin : MonoBehaviour
@@ -17,31 +16,40 @@ public class Coin : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            CollectCoin(other.gameObject);
+            CollectCoin();
         }
     }
 
-    private void CollectCoin(GameObject player)
+    private void CollectCoin()
     {
+        Debug.Log("=== COIN COLLECT ===");
+
+        // Эффект сбора - ДО уничтожения монеты!
+        if (collectEffect != null)
+        {
+            Debug.Log("Creating collect effect...");
+            // Используем Quaternion.identity вместо transform.rotation
+            Instantiate(collectEffect, transform.position, Quaternion.identity);
+            Debug.Log("Effect created at position: " + transform.position);
+        }
+        else
+        {
+            Debug.LogError("CollectEffect is NULL! Assign in inspector.");
+        }
+
         // Получаем HUD и добавляем монету
         GameHUD hud = FindObjectOfType<GameHUD>();
         if (hud != null)
         {
             hud.CollectCoin();
+            Debug.Log($"Монета собрана! Всего: {hud.collectedCoins}");
         }
-
-        // Эффект сбора
-        if (collectEffect != null)
+        else
         {
-            Instantiate(collectEffect, transform.position, transform.rotation);
+            Debug.LogWarning("HUD not found!");
         }
-
-        // Звук сбора (можно добавить)
-        // AudioSource.PlayClipAtPoint(collectSound, transform.position);
 
         // Уничтожаем монету
         Destroy(gameObject);
-
-        Debug.Log($"Монета собрана! Всего: {hud.collectedCoins}");
     }
 }
